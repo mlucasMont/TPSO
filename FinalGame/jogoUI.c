@@ -1,10 +1,10 @@
-// jogoUI.c
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ncurses.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "jogoUI.h"
 
 #define PIPE_NAME "jogo_pipe"
 
