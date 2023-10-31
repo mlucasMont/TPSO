@@ -38,11 +38,34 @@ void printLab(const char *grid) {
     endwin(); // Finaliza a NCurses
 }
 
+void getCredentials(struct Credentials *credentials) {
+    // Lógica para receber as credenciais do utilizador
+}
+
+int validateCommand(struct Command *command) {
+    // Lógica para validar os comandos
+}
+
 int main() {
     FILE *file = fopen("labirinto.txt", "r");
     if (file == NULL) {
         printf("Erro ao abrir o arquivo do labirinto.\n");
         return 1;
+    }
+
+    struct Credentials userCredentials;
+    getCredentials(&userCredentials);
+
+    struct Command userCommand;
+    // Lógica para ler comandos do utilizador e validá-los
+    while (1) {
+        // Ler comando e validar
+        // Exemplo de como chamar a função de validação:
+        if (validateCommand(&userCommand)) {
+            // Comando válido
+        } else {
+            // Comando inválido
+        }
     }
 
     fseek(file, 0, SEEK_END);
