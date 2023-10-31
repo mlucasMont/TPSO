@@ -33,6 +33,23 @@ void sendPlayerInfoToMotor(const char *playerName) {
     close(fd);
 }
 
+void sendComandsToMotor(struct Command *command){
+    int fd;
+    char command_insert[25];
+
+    sprintf(command_insert, "%s", command);
+
+    mkfifo(PIPE_NAME, 0666);
+
+    fd = open(PIPE_NAME, O_WRONLY);
+    if (fd < 0){
+        perror("Erro ao abrir pipe");
+        exit(1);
+    }
+    write(fd, command_insert, strlen(command_insert) + 1);
+    close(fd);
+}
+
 void receiveMessageFromMotor() {
     int fd;
     char message[100];

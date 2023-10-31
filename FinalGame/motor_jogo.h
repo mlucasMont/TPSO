@@ -4,6 +4,8 @@
 #define MAX_BOT_MESSAGES 100
 #define MAX_COMMAND_LENGTH 50
 
+#include "jogoUI.h"
+
 struct BotMessage {
     char content[MAX_COMMAND_LENGTH];
 };
