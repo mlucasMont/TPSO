@@ -7,6 +7,7 @@
 #include "jogoUI.h"
 
 #define PIPE_NAME "jogo_pipe"
+#define PIPE_NAME_READ "jogo_motor"
 
 #define GRID_WIDTH 80
 #define GRID_HEIGHT 30
@@ -33,29 +34,12 @@ void sendPlayerInfoToMotor(const char *playerName) {
     close(fd);
 }
 
-void sendComandsToMotor(struct Command *command){
-    int fd;
-    char command_insert[25];
-
-    sprintf(command_insert, "%s", command);
-
-    mkfifo(PIPE_NAME, 0666);
-
-    fd = open(PIPE_NAME, O_WRONLY);
-    if (fd < 0){
-        perror("Erro ao abrir pipe");
-        exit(1);
-    }
-    write(fd, command_insert, strlen(command_insert) + 1);
-    close(fd);
-}
-
 void receiveMessageFromMotor() {
     int fd;
     char message[100];
 
     // Abrindo o pipe para leitura
-    fd = open(PIPE_NAME, O_RDONLY);
+    fd = open(PIPE_NAME_READ, O_RDONLY);
     if (fd < 0) {
         perror("Erro ao abrir o pipe");
         exit(1);
