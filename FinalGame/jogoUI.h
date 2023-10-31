@@ -5,11 +5,17 @@
 
 struct Credentials {
     char username[20];
-    char password[20];
 };
 
 struct Command {
     char name[MAX_COMMAND_LENGTH];
+    char users;
+    char kick;
+    char bots;
+    char bmov;
+    char rbm;
+    char begin;
+    char end;
     // outros parâmetros do comando
 };
 
