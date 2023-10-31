@@ -1,6 +1,11 @@
 #ifndef JOGO_UI_H
 #define JOGO_UI_H
 
+#define PIPE_NAME "jogo_pipe"
+#define PIPE_NAME_READ "jogo_motor"
+#define PIPE_NAME_UI "jogo_ui"
+#define GAME_ENGINE_PROCESS_ID "unique_game_engine_identifier"
+
 #include "motor_jogo.h"
 
 struct Credentials {

@@ -6,11 +6,29 @@
 #include <fcntl.h>
 #include "jogoUI.h"
 
-#define PIPE_NAME "jogo_pipe"
-#define PIPE_NAME_READ "jogo_motor"
-
 #define GRID_WIDTH 80
 #define GRID_HEIGHT 30
+
+void sendCommandToGameEngine(const char *command) {
+    int fd;
+    char formattedCommand[100];
+
+    mkfifo(PIPE_NAME_UI, 0666);  // Pipe para comandos do jogo UI
+
+    // Formatar o comando com o identificador do processo do motor do jogo
+    sprintf(formattedCommand, "%s%s", GAME_ENGINE_PROCESS_ID, command);
+
+    // Abrir o pipe para escrita
+    fd = open(PIPE_NAME_UI, O_WRONLY);
+    if (fd < 0) {
+        perror("Erro ao abrir o pipe do jogo UI");
+        exit(1);
+    }
+
+    // Escrever o comando no pipe
+    write(fd, formattedCommand, strlen(formattedCommand) + 1);
+    close(fd);
+}
 
 void sendPlayerInfoToMotor(const char *playerName) {
     int fd;

@@ -5,13 +5,43 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define GRID_WIDTH 80
-#define GRID_HEIGHT 30
-#define NUM_PLAYERS 3
-
-#define PIPE_NAME "jogo_pipe"
-
 int numMessagesOne;
+
+void waitForCommandsFromUI() {
+    int fd_user, fd_ui;
+    char commandBuffer[100];
+
+    mkfifo(PIPE_NAME, 0666);  // Pipe para comandos do usuário
+    mkfifo(PIPE_NAME_UI, 0666);  // Novo pipe para comandos do jogo UI
+
+    while (1) {
+        // Abrir pipe para comandos do usuário
+        fd_user = open(PIPE_NAME, O_RDONLY);
+        if (fd_user < 0) {
+            perror("Erro ao abrir o pipe do usuário");
+            exit(1);
+        }
+
+        // Abrir pipe para comandos do jogo UI
+        fd_ui = open(PIPE_NAME_UI, O_RDONLY);
+        if (fd_ui < 0) {
+            perror("Erro ao abrir o pipe do jogo UI");
+            exit(1);
+        }
+
+        // Ler comando enviado pelo jogoUI
+        read(fd_ui, commandBuffer, sizeof(commandBuffer));
+        close(fd_ui);
+
+        // Processar o comando recebido apenas se for do processo autorizado
+        if (strncmp(commandBuffer, GAME_ENGINE_PROCESS_ID, strlen(GAME_ENGINE_PROCESS_ID)) == 0) {
+            processUserCommand(commandBuffer);
+        }
+
+        // Fechar pipe do usuário
+        close(fd_user);
+    }
+}
 
 void processUserCommand(const char *command) {
     // Implemente a lógica para processar os comandos do usuário recebidos pelo pipe nomeado
