@@ -1,7 +1,7 @@
 #ifndef JOGO_UI_H
 #define JOGO_UI_H
 
-#define MAX_COMMAND_LENGTH 50
+#include "motor_jogo.h"
 
 struct Credentials {
     char username[20];

@@ -20,8 +20,8 @@ void printLab(const char *grid) {
         y = i / GRID_WIDTH;
         x = i % GRID_WIDTH;
 
-        if (grid[i] == '#') {
-            mvaddch(y, x, '#');
+        if (grid[i] == 'X') {
+            mvaddch(y, x, 'X');
         } else if (grid[i] == ' ') {
             mvaddch(y, x, ' ');
         }
