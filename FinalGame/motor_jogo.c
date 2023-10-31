@@ -9,7 +9,41 @@
 #define GRID_HEIGHT 30
 #define NUM_PLAYERS 3
 
+#define PIPE_NAME "jogo_pipe"
+
 int numMessagesOne;
+
+void processUserCommand(const char *command) {
+    // Implemente a lógica para processar os comandos do usuário recebidos pelo pipe nomeado
+    // Aqui, você lidará com os comandos enviados pelo jogoUI
+    printf("Comando recebido do jogoUI: %s\n", command);
+    // Realize a lógica do jogo com base no comando recebido
+    // Por exemplo, movimento do jogador, ação no jogo, etc.
+}
+
+void waitForCommandsFromUI() {
+    int fd;
+    char commandBuffer[100];
+
+    // Criando o pipe nomeado (FIFO) se não existir
+    mkfifo(PIPE_NAME, 0666);
+
+    while (1) {
+        // Abrindo o pipe para leitura
+        fd = open(PIPE_NAME, O_RDONLY);
+        if (fd < 0) {
+            perror("Erro ao abrir o pipe");
+            exit(1);
+        }
+
+        // Lendo o comando enviado pelo jogoUI
+        read(fd, commandBuffer, sizeof(commandBuffer));
+        close(fd);
+
+        // Processando o comando recebido
+        processUserCommand(commandBuffer);
+    }
+}
 
 // Função para verificar se uma posição contém um obstáculo ('X')
 int is_obstacle(int x, int y, const char *grid) {
