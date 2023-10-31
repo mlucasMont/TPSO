@@ -1,4 +1,5 @@
 // motor_jogo.c
+#include "motor_jogo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -6,6 +7,8 @@
 #define GRID_WIDTH 80
 #define GRID_HEIGHT 30
 #define NUM_PLAYERS 3
+
+int numMessagesOne;
 
 // Função para verificar se uma posição contém um obstáculo ('X')
 int is_obstacle(int x, int y, const char *grid) {
@@ -73,7 +76,7 @@ int main(int argc, char *argv[]) {
                 struct BotMessage messages[MAX_BOT_MESSAGES];
                 // Receber mensagens do bot
                 // Mostrar mensagens na tela
-                showBotMessages(messages, numMessages);
+                showBotMessages(messages, numMessagesOne);
             }
             // Outros comandos administrativos...
         } else {
