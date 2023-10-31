@@ -7,7 +7,7 @@
 #define GRID_HEIGHT 30
 #define NUM_PLAYERS 3
 
-// Função para verificar se uma posição contém um obstáculo ('#')
+// Função para verificar se uma posição contém um obstáculo ('X')
 int is_obstacle(int x, int y, const char *grid) {
     if (x < 0 || x >= GRID_WIDTH || y < 0 || y >= GRID_HEIGHT) {
         return 1; // Fora dos limites da grade é considerado um obstáculo
