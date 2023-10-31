@@ -12,7 +12,7 @@ int is_obstacle(int x, int y, const char *grid) {
     if (x < 0 || x >= GRID_WIDTH || y < 0 || y >= GRID_HEIGHT) {
         return 1; // Fora dos limites da grade é considerado um obstáculo
     }
-    return grid[y * GRID_WIDTH + x] == '#';
+    return grid[y * GRID_WIDTH + x] == 'X';
 }
 
 int is_Fim(int x, int y, const char *grid) {
