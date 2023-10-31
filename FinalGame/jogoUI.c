@@ -1,10 +1,54 @@
 // jogoUI.c
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define PIPE_NAME "jogo_pipe"
 
 #define GRID_WIDTH 80
 #define GRID_HEIGHT 30
+
+void sendPlayerInfoToMotor(const char *playerName) {
+    int fd;
+    char playerInfo[50];
+
+    // Construindo a mensagem a ser enviada para o motor
+    sprintf(playerInfo, "PLAYER_INFO:%s", playerName);
+
+    // Criando o pipe nomeado (FIFO) se não existir
+    mkfifo(PIPE_NAME, 0666);
+
+    // Abrindo o pipe para escrita
+    fd = open(PIPE_NAME, O_WRONLY);
+    if (fd < 0) {
+        perror("Erro ao abrir o pipe");
+        exit(1);
+    }
+
+    // Escrevendo as informações do jogador no pipe
+    write(fd, playerInfo, strlen(playerInfo) + 1);
+    close(fd);
+}
+
+void receiveMessageFromMotor() {
+    int fd;
+    char message[100];
+
+    // Abrindo o pipe para leitura
+    fd = open(PIPE_NAME, O_RDONLY);
+    if (fd < 0) {
+        perror("Erro ao abrir o pipe");
+        exit(1);
+    }
+
+    // Lendo a mensagem do pipe
+    read(fd, message, sizeof(message));
+    printf("Mensagem recebida do motor: %s\n", message);
+    close(fd);
+}
 
 // Função para imprimir o labirinto na tela usando NCurses
 void printLab(const char *grid) {
