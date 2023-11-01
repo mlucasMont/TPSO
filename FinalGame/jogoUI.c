@@ -92,7 +92,15 @@ void displayGrid(const char *grid) {
     endwin();
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        printf("Uso: %s <Nome>\n", argv[0]);
+        return 1;
+    }
+
+    char * playerName = argv[1];
+
+    sendPlayerInfoToMotor(playerName);
 
     int fd_ui;
     char receivedGrid[GRID_WIDTH * GRID_HEIGHT + 1];
