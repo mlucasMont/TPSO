@@ -71,18 +71,6 @@ int validateAdminCommand(struct CommandAdmin *adminCommand) {
     // Lógica para validar os comandos do administrador
 }
 
-void launchBot() {
-    // Lógica para lançar o bot
-}
-
-void receiveCoordinates(struct Coordinates *coordinates) {
-    // Lógica para receber coordenadas
-}
-
-void showBotMessages(struct BotMessage *botMessages, int numMessages) {
-    // Lógica para mostrar mensagens do bot
-}
-
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("Uso: %s <arquivo do labirinto>\n", argv[0]);

@@ -1,13 +1,10 @@
-all: jogoUI motor bot
+all: jogoUI.o motor_jogo.o
 
-jogoUI: jogoUI.c jogoUI.h
-    gcc -o jogoUI jogoUI.c -lncurses
+jogoUI.o: jogoUI.h
+    gcc -c jogoUI.c
 
-motor: motor_jogo.c motor_jogo.h
-    gcc -o motor motor_jogo.c
-
-bot: bot.c
-    gcc -o bot bot.c
+motor_jogo.o: motor_jogo.h
+    gcc -c motor_jogo.c
 
 clean:
-    rm -f jogoUI motor bot
+    rm -f *.o
