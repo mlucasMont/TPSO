@@ -3,3 +3,4 @@ gcc -o jogoUI jogoUI.c -lncurses
 
 
 funcionou
+jij
