@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <fcntl.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ncurses.h>
 #include <unistd.h>
-#include <fcntl.h>
+
 #include "jogoUI.h"
 
 #define GRID_WIDTH 80
@@ -69,38 +70,6 @@ void receiveMessageFromMotor() {
     close(fd);
 }
 
-// Função para imprimir o labirinto na tela usando NCurses
-void printLab(const char *grid) {
-    initscr(); // Inicializa NCurses
-    raw();
-    keypad(stdscr, TRUE);
-    noecho();
-    curs_set(0);
-
-    int x, y;
-    int i;
-    for (i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
-        y = i / GRID_WIDTH;
-        x = i % GRID_WIDTH;
-
-        if (grid[i] == 'X') {
-            mvaddch(y, x, 'X');
-        } else if (grid[i] == ' ') {
-            mvaddch(y, x, ' ');
-        }
-    }
-
-    refresh(); // Atualiza a tela
-
-    // Lógica para interação do jogador e atualização do jogo na interface...
-    while (1) {
-        // Lógica para lidar com a entrada do jogador e atualização da interface
-        // ...
-    }
-
-    endwin(); // Finaliza a NCurses
-}
-
 void getCredentials(struct Credentials *credentials) {
     // Lógica para receber as credenciais do utilizador
 }
@@ -109,12 +78,35 @@ int validateCommand(struct Command *command) {
     // Lógica para validar os comandos
 }
 
-int main() {
-    FILE *file = fopen("labirinto.txt", "r");
-    if (file == NULL) {
-        printf("Erro ao abrir o arquivo do labirinto.\n");
-        return 1;
+void displayGrid(const char *grid) {
+    initscr();
+    int x, y;
+    for (int i = 0; i < GRID_WIDTH * GRID_HEIGHT; i++) {
+        y = i / GRID_WIDTH;
+        x = i % GRID_WIDTH;
+
+        mvaddch(y, x, grid[i]);
     }
+    refresh();
+    getch(); // Aguarda um caractere para encerrar a exibição
+    endwin();
+}
+
+int main() {
+
+    int fd_ui;
+    char receivedGrid[GRID_WIDTH * GRID_HEIGHT + 1];
+
+    // Aguarda sinal do motor para iniciar a execução
+    fd_ui = open(PIPE_NAME_UI, O_RDONLY);
+    if (fd_ui < 0) {
+        perror("Erro ao abrir o pipe do jogo UI");
+        exit(1);
+    }
+
+    // Aguarda e recebe o labirinto do motor
+    read(fd_ui, receivedGrid, sizeof(receivedGrid));
+    close(fd_ui);
 
     struct Credentials userCredentials;
     getCredentials(&userCredentials);
@@ -131,24 +123,7 @@ int main() {
         }
     }
 
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    rewind(file);
-
-    char *grid = (char *)malloc(file_size + 1);
-    if (grid == NULL) {
-        printf("Erro de alocação de memória.\n");
-        fclose(file);
-        return 1;
-    }
-
-    fread(grid, file_size, 1, file);
-    grid[file_size] = '\0';
-    fclose(file);
-
-    printLab(grid);
-
-    free(grid);
+    displayGrid(receivedGrid);
 
     return 0;
 }

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <fcntl.h>
 
 int numMessagesOne;
@@ -49,30 +50,6 @@ void processUserCommand(const char *command) {
     printf("Comando recebido do jogoUI: %s\n", command);
     // Realize a lógica do jogo com base no comando recebido
     // Por exemplo, movimento do jogador, ação no jogo, etc.
-}
-
-void waitForCommandsFromUI() {
-    int fd;
-    char commandBuffer[100];
-
-    // Criando o pipe nomeado (FIFO) se não existir
-    mkfifo(PIPE_NAME, 0666);
-
-    while (1) {
-        // Abrindo o pipe para leitura
-        fd = open(PIPE_NAME, O_RDONLY);
-        if (fd < 0) {
-            perror("Erro ao abrir o pipe");
-            exit(1);
-        }
-
-        // Lendo o comando enviado pelo jogoUI
-        read(fd, commandBuffer, sizeof(commandBuffer));
-        close(fd);
-
-        // Processando o comando recebido
-        processUserCommand(commandBuffer);
-    }
 }
 
 // Função para verificar se uma posição contém um obstáculo ('X')
@@ -129,6 +106,25 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // Lê o labirinto do arquivo txt
+    fread(grid, file_size, 1, file);
+    grid[file_size] = '\0';
+    fclose(file);
+
+    // Envia o labirinto para o jogoUI
+    int fd_ui;
+    mkfifo(PIPE_NAME_UI, 0666); // Pipe para comandos do jogo UI
+
+    fd_ui = open(PIPE_NAME_UI, O_WRONLY);
+    if (fd_ui < 0) {
+        perror("Erro ao abrir o pipe do jogo UI");
+        exit(1);
+    }
+
+    // Envia o labirinto para o jogoUI
+    write(fd_ui, grid, strlen(grid) + 1);
+    close(fd_ui);
+
      struct CommandAdmin adminCommand;
     // Lógica para ler e validar comandos do administrador
     while (1) {
@@ -148,10 +144,6 @@ int main(int argc, char *argv[]) {
             // Comando inválido
         }
     }
-
-    fread(grid, file_size, 1, file);
-    grid[file_size] = '\0';
-    fclose(file);
 
     // Lógica principal do motor do jogo...
     // Lógica para interação dos jogadores, detecção de colisões, condições de vitória, etc.
